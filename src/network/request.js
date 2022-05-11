@@ -19,7 +19,7 @@ export function request(config) {
   // 响应拦截
   instance.interceptors.response.use(result => {
     // 响应成功
-    return result;
+    return result.data;
   }, error => {
     // 服务器响应错误
     console.log(error);
