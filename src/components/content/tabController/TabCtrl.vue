@@ -40,6 +40,9 @@ export default {
   text-align: center;
   font-size: 15px;
   background-color: var(--color-background);
+  position: sticky;
+  top: 44px;
+  z-index: 999;
 }
 
 .tab-ctrl .tab-ctrl-item {

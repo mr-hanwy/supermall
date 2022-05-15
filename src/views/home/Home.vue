@@ -2,16 +2,18 @@
   <div id="home">
     <!-- 顶部标题栏 -->
     <home-nav-bar/>
-    <!-- 轮播图 -->
-    <home-swiper :banners="banners"/>
-    <!-- 推荐 -->
-    <recommend :recommend="recommend"/>
-    <!-- 流行 -->
-    <feature/>
-    <!-- 导航 -->
-    <tab-ctrl class="tab-ctrl" :texts="['流行','新款','精选']" @tabClick="tabClick"/>
-    <!-- 商品列表 -->
-    <goods-list :goods="currentGoodsList"/>
+    <b-scroll class="b-scroll">
+      <!-- 轮播图 -->
+      <home-swiper :banners="banners"/>
+      <!-- 推荐 -->
+      <recommend :recommend="recommend"/>
+      <!-- 流行 -->
+      <feature/>
+      <!-- 导航 -->
+      <tab-ctrl class="tab-ctrl" :texts="['流行','新款','精选']" @tabClick="tabClick"/>
+      <!-- 商品列表 -->
+      <goods-list :goods="currentGoodsList"/>
+    </b-scroll>
   </div>
 </template>
 
@@ -24,11 +26,13 @@ import Feature from "./component/Feature";
 import TabCtrl from "components/content/tabController/TabCtrl";
 import GoodsList from "components/content/goodsList/GoodsList";
 
+import BScroll from "components/commons/scroll/BScroll";
+
 import {getGoodsList, getMultiData} from "network/home";
 
 export default {
   name: "Home",
-  components: {HomeNavBar, HomeSwiper, Recommend, Feature, TabCtrl, GoodsList},
+  components: {HomeNavBar, HomeSwiper, Recommend, Feature, TabCtrl, GoodsList, BScroll},
   data() {
     return {
       banners: null,
@@ -93,9 +97,17 @@ export default {
 </script>
 
 <style scoped>
-.tab-ctrl {
-  position: sticky;
+
+#home {
+  height: 100vh;
+  position: relative;
+}
+
+.b-scroll {
+  position: absolute;
   top: 44px;
-  z-index: 999;
+  bottom: 49px;
+  left: 0;
+  right: 0;
 }
 </style>
