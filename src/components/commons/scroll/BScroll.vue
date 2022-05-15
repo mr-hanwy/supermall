@@ -17,7 +17,9 @@ export default {
     }
   },
   mounted() {
-    this.scroll = new BetterScroll(this.$refs.scrollWrapper, {});
+    this.scroll = new BetterScroll(this.$refs.scrollWrapper, {
+      click: true
+    });
   }
 }
 </script>
