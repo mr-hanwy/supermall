@@ -31,12 +31,12 @@ export default {
   justify-content: space-around;
   padding: 10px 0 20px;
   border-bottom: 10px solid #eee;
+  text-align: center;
+  font-size: 14px;
 }
 
 .recommend .recommend-item {
   flex: 0 1 20%;
-  /*max-width: 20%;*/
-  text-align: center;
 }
 
 .recommend .recommend-item .recommend-img {
@@ -45,9 +45,5 @@ export default {
 
 .recommend .recommend-item .recommend-img img {
   width: 100%;
-}
-
-.recommend .recommend-item .recommend-text {
-  font-size: 14px;
 }
 </style>

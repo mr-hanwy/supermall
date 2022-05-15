@@ -20,5 +20,10 @@ export default {
   text-align: center;
   color: #fff;
   background-color: var(--color-tint);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
 }
 </style>
