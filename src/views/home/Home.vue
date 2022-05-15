@@ -2,7 +2,8 @@
   <div id="home">
     <!-- 顶部标题栏 -->
     <home-nav-bar/>
-    <b-scroll class="b-scroll">
+    <!-- 滚动视图 -->
+    <b-scroll class="b-scroll" ref="scroll" :probeType="3" @scroll="scrollTo">
       <!-- 轮播图 -->
       <home-swiper :banners="banners"/>
       <!-- 推荐 -->
@@ -14,6 +15,8 @@
       <!-- 商品列表 -->
       <goods-list :goods="currentGoodsList"/>
     </b-scroll>
+    <!-- 回到顶部按钮 -->
+    <back-top @click.native="backTop" v-show="backTopIsShow"/>
   </div>
 </template>
 
@@ -25,6 +28,7 @@ import Feature from "./component/Feature";
 
 import TabCtrl from "components/content/tabController/TabCtrl";
 import GoodsList from "components/content/goodsList/GoodsList";
+import BackTop from "components/content/backTop/BackTop";
 
 import BScroll from "components/commons/scroll/BScroll";
 
@@ -32,7 +36,11 @@ import {getGoodsList, getMultiData} from "network/home";
 
 export default {
   name: "Home",
-  components: {HomeNavBar, HomeSwiper, Recommend, Feature, TabCtrl, GoodsList, BScroll},
+  components: {
+    HomeNavBar, HomeSwiper, Recommend, Feature,
+    TabCtrl, GoodsList, BackTop,
+    BScroll
+  },
   data() {
     return {
       banners: null,
@@ -44,7 +52,8 @@ export default {
         new: {page: 0, list: []},
         sell: {page: 0, list: []}
       },
-      currentGoodsType: 'pop'
+      currentGoodsType: 'pop',
+      backTopIsShow: false
     }
   },
   created() {
@@ -60,6 +69,9 @@ export default {
     }
   },
   methods: {
+    /**
+     * ================== 请求数据 Start ==================
+     */
     getMultiData() {
       getMultiData().then(result => {
         this.banners = result.data.banner.list;
@@ -78,7 +90,10 @@ export default {
       }).catch(err => {
         console.log(err);
       });
-    },
+    },/* ================== 请求数据 end ================== */
+    /**
+     * ================== 监听事件 Start ==================
+     */
     tabClick(index) {
       switch (index) {
         case 0:
@@ -91,7 +106,13 @@ export default {
           this.currentGoodsType = 'sell';
           break;
       }
-    }
+    },
+    backTop() {
+      this.$refs.scroll.scrollTo(0, 0);
+    },
+    scrollTo(position) {
+      this.backTopIsShow = Math.abs(position.y) > 1000;
+    }/* ================== 监听事件 end ================== */
   }
 }
 </script>

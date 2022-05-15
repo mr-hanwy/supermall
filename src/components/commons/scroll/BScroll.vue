@@ -11,6 +11,12 @@ import BetterScroll from 'better-scroll';
 
 export default {
   name: "BScroll",
+  props: {
+    probeType: {
+      type: Number,
+      default: 0
+    }
+  },
   data() {
     return {
       scroll: null
@@ -18,8 +24,18 @@ export default {
   },
   mounted() {
     this.scroll = new BetterScroll(this.$refs.scrollWrapper, {
-      click: true
+      click: true,
+      probeType: this.probeType
     });
+
+    this.scroll.on('scroll', position => {
+      this.$emit('scroll', position);
+    });
+  },
+  methods: {
+    scrollTo(x, y, time = 500) {
+      this.scroll.scrollTo(x, y, time);
+    }
   }
 }
 </script>
