@@ -1,7 +1,7 @@
 <template>
   <div class="goods-list-item">
     <a :href="info.link">
-      <img :src="info.show.img" alt=""/>
+      <img :src="info.show.img" alt="" @load="imageLoaded"/>
       <p class="item-title">{{ info.title }}</p>
       <div class="item-feature">
         <span class="item-price-origin" v-if="hasOrgPrice">{{ info.orgPrice }}</span>
@@ -24,6 +24,11 @@ export default {
   computed: {
     hasOrgPrice() {
       return this.info.orgPrice !== undefined && this.info.orgPrice !== '' && this.info.orgPrice !== '￥' && this.info.orgPrice.substring(1) !== this.info.price;
+    }
+  },
+  methods: {
+    imageLoaded() {
+      this.$eventBus.$emit('imageLoaded');
     }
   }
 }

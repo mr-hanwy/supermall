@@ -3,7 +3,7 @@
     <!-- 顶部标题栏 -->
     <home-nav-bar/>
     <!-- 滚动视图 -->
-    <b-scroll class="b-scroll" ref="scroll" :probeType="3" @scroll="scrollTo">
+    <b-scroll class="b-scroll" ref="scroll" :probeType="3" @scroll="scrollTo" :pull-up-load="true" @pullingUp="loadMore">
       <!-- 轮播图 -->
       <home-swiper :banners="banners"/>
       <!-- 推荐 -->
@@ -63,6 +63,14 @@ export default {
     this.getGoodsList('new');
     this.getGoodsList('sell');
   },
+  mounted() {
+
+    const refresh = this.debounce(this.$refs.scroll.refresh, 500);
+
+    this.$eventBus.$on('imageLoaded', () => {
+      refresh();
+    })
+  },
   computed: {
     currentGoodsList() {
       return this.goods[this.currentGoodsType].list;
@@ -87,6 +95,7 @@ export default {
       getGoodsList(type, page).then(result => {
         this.goods[type].list.push(...result.data.list)
         this.goods[type].page = page;
+        this.$refs.scroll.finishPullUp();
       }).catch(err => {
         console.log(err);
       });
@@ -112,7 +121,28 @@ export default {
     },
     scrollTo(position) {
       this.backTopIsShow = Math.abs(position.y) > 1000;
-    }/* ================== 监听事件 end ================== */
+    },
+    loadMore() {
+      this.getGoodsList(this.currentGoodsType);
+    },/* ================== 监听事件 end ================== */
+
+    /**
+     *  防抖函数
+     *  放置在指定时间内频繁调用函数或请求数据
+     * @param func 需要执行的函数
+     * @param delay 等待时间
+     * @returns {(function(...[*]): void)|*} 最终调用的函数
+     */
+    debounce(func, delay) {
+      let timer = null;
+
+      return (...args) => {
+        if (timer) clearTimeout(timer);
+        timer = setTimeout(() => {
+          func.apply(this, args);
+        }, delay);
+      }
+    }
   }
 }
 </script>
