@@ -56,7 +56,8 @@ export default {
       },
       currentGoodsType: 'pop',
       backTopIsShow: false,
-      isTabCtrlFixed: false
+      isTabCtrlFixed: false,
+      scrollPositionY: 0
     }
   },
   created() {
@@ -78,6 +79,13 @@ export default {
     currentGoodsList() {
       return this.goods[this.currentGoodsType].list;
     }
+  },
+  activated() {
+    this.$refs.scroll.scrollTo(0, this.scrollPositionY, 0);
+    this.$refs.scroll.refresh();
+  },
+  deactivated() {
+    this.scrollPositionY = this.$refs.scroll.getScrollPositionY();
   },
   methods: {
     /**

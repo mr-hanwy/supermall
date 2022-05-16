@@ -50,6 +50,9 @@ export default {
     },
     finishPullUp() {
       this.scroll && this.scroll.finishPullUp();
+    },
+    getScrollPositionY() {
+      return this.scroll ? this.scroll.y : 0;
     }
   }
 }
