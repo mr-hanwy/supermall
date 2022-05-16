@@ -2,8 +2,10 @@
   <div id="home">
     <!-- 顶部标题栏 -->
     <home-nav-bar/>
+    <!-- 导航（实现吸顶效果） -->
+    <tab-ctrl class="fixed-tab-ctrl" :texts="['流行','新款','精选']" @tabClick="tabClick" ref="fixedTabCtrl" v-show="isTabCtrlFixed"/>
     <!-- 滚动视图 -->
-    <b-scroll class="b-scroll" ref="scroll" :probeType="3" @scroll="scrollTo" :pull-up-load="true" @pullingUp="loadMore">
+    <b-scroll class="b-scroll" ref="scroll" :probeType="3" @scroll="currenScrollPosition" :pull-up-load="true" @pullingUp="loadMore">
       <!-- 轮播图 -->
       <home-swiper :banners="banners"/>
       <!-- 推荐 -->
@@ -11,7 +13,7 @@
       <!-- 流行 -->
       <feature/>
       <!-- 导航 -->
-      <tab-ctrl class="tab-ctrl" :texts="['流行','新款','精选']" @tabClick="tabClick"/>
+      <tab-ctrl :texts="['流行','新款','精选']" @tabClick="tabClick" ref="tabCtrl"/>
       <!-- 商品列表 -->
       <goods-list :goods="currentGoodsList"/>
     </b-scroll>
@@ -53,7 +55,8 @@ export default {
         sell: {page: 0, list: []}
       },
       currentGoodsType: 'pop',
-      backTopIsShow: false
+      backTopIsShow: false,
+      isTabCtrlFixed: false
     }
   },
   created() {
@@ -115,12 +118,18 @@ export default {
           this.currentGoodsType = 'sell';
           break;
       }
+      this.$refs.tabCtrl.currentIndex = index;
+      this.$refs.fixedTabCtrl.currentIndex = index;
     },
     backTop() {
       this.$refs.scroll.scrollTo(0, 0);
     },
-    scrollTo(position) {
+    currenScrollPosition(position) {
+      // 判断是否需要显示 backTop 按钮
       this.backTopIsShow = Math.abs(position.y) > 1000;
+
+      // 判断 tab-ctrl 是否吸顶
+      this.isTabCtrlFixed = Math.abs(position.y) > this.$refs.tabCtrl.$el.offsetTop;
     },
     loadMore() {
       this.getGoodsList(this.currentGoodsType);
@@ -160,5 +169,10 @@ export default {
   bottom: 49px;
   left: 0;
   right: 0;
+}
+
+.fixed-tab-ctrl {
+  position: relative;
+  z-index: 999;
 }
 </style>
