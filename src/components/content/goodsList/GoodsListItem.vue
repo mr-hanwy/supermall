@@ -1,14 +1,12 @@
 <template>
-  <div class="goods-list-item">
-    <a :href="info.link">
-      <img :src="info.show.img" alt="" @load="imageLoaded"/>
-      <p class="item-title">{{ info.title }}</p>
-      <div class="item-feature">
-        <span class="item-price-origin" v-if="hasOrgPrice">{{ info.orgPrice }}</span>
-        <span class="item-price">￥{{ info.price }}</span>
-        <span class="item-collect">{{ info.cfav }}</span>
-      </div>
-    </a>
+  <div class="goods-list-item" @click="itemClick">
+    <img :src="info.show.img" alt="" @load="imageLoaded"/>
+    <p class="item-title">{{ info.title }}</p>
+    <div class="item-feature">
+      <span class="item-price-origin" v-if="hasOrgPrice">{{ info.orgPrice }}</span>
+      <span class="item-price">￥{{ info.price }}</span>
+      <span class="item-collect">{{ info.cfav }}</span>
+    </div>
   </div>
 </template>
 
@@ -29,6 +27,9 @@ export default {
   methods: {
     imageLoaded() {
       this.$eventBus.$emit('imageLoaded');
+    },
+    itemClick() {
+      this.$router.push({path: '/detail', query: {iid: this.info.iid}});
     }
   }
 }
