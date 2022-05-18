@@ -1,5 +1,5 @@
 <template>
-  <div class="moreGoodsInfo">
+  <div id="moreGoodsInfo" v-if="Object.keys(moreInfo).length > 0">
     <div class="desc">
       <div class="desc-start"></div>
       <div class="desc-info">{{ moreInfo.desc }}</div>
@@ -10,7 +10,7 @@
         <div class="item-title"><span>{{ item.key }}</span></div>
         <div class="item-image-list">
           <div class="image-item" v-for="image in item.list">
-            <img :src="image" alt=""/>
+            <img :src="image" alt="" @load="morGoodsImageLoaded"/>
           </div>
         </div>
       </div>
@@ -28,11 +28,19 @@ export default {
         return {};
       }
     }
+  },
+  methods: {
+    morGoodsImageLoaded() {
+      this.$emit('morGoodsImageLoaded');
+    }
   }
 }
 </script>
 
 <style scoped>
+#moreGoodsInfo {
+  padding: 10px 0;
+}
 
 .desc {
   padding: 20px 10px;

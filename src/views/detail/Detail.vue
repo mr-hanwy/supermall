@@ -5,7 +5,8 @@
       <detail-swiper :items="swiperItems" @detailSwiperImageLoaded="detailSwiperImageLoaded"/>
       <detail-base-goods-info :goods-info="goodsInfo"/>
       <detail-shop-info :shop-info="shopInfo"/>
-      <detail-more-goods-info :more-info="moreGoodsInfo"/>
+      <detail-more-goods-info :more-info="moreGoodsInfo" @morGoodsImageLoaded="morGoodsImageLoaded"/>
+      <goods-params-info :goods-params-info="goodsParamsInfo"/>
     </b-scroll>
     <back-top @click.native="backToTop" v-show="backTopIsShow"/>
   </div>
@@ -17,6 +18,7 @@ import DetailSwiper from "./component/DetailSwiper";
 import DetailBaseGoodsInfo from "./component/DetailBaseGoodsInfo";
 import DetailShopInfo from "./component/DetailShopInfo";
 import DetailMoreGoodsInfo from "./component/DetailMoreGoodsInfo";
+import GoodsParamsInfo from "./component/GoodsParamsInfo";
 
 import BackTop from "components/content/backTop/BackTop";
 
@@ -27,7 +29,7 @@ import {getDetail, GoodsInfo} from "network/detail";
 export default {
   name: "Detail",
   components: {
-    DetailNavBar, DetailSwiper, DetailBaseGoodsInfo, DetailShopInfo, DetailMoreGoodsInfo,
+    DetailNavBar, DetailSwiper, DetailBaseGoodsInfo, DetailShopInfo, DetailMoreGoodsInfo, GoodsParamsInfo,
     BackTop,
     BScroll
   },
@@ -39,7 +41,8 @@ export default {
       refresh: null,
       goodsInfo: {},
       shopInfo: {},
-      moreGoodsInfo: {}
+      moreGoodsInfo: {},
+      goodsParamsInfo: {}
     }
   },
   created() {
@@ -51,6 +54,7 @@ export default {
       this.goodsInfo = new GoodsInfo(data.itemInfo, data.columns, data.shopInfo.services);
       this.shopInfo = data.shopInfo;
       this.moreGoodsInfo = data.detailInfo;
+      this.goodsParamsInfo = data.itemParams;
       console.log(result);
     })
   },
@@ -63,6 +67,9 @@ export default {
       this.backTopIsShow = Math.abs(position.y) > 1000;
     },
     detailSwiperImageLoaded() {
+      this.refresh && this.refresh();
+    },
+    morGoodsImageLoaded() {
       this.refresh && this.refresh();
     },
     backToTop() {
