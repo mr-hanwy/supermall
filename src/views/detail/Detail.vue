@@ -5,7 +5,9 @@
       <detail-swiper :items="swiperItems" @detailSwiperImageLoaded="detailSwiperImageLoaded"/>
       <detail-base-goods-info :goods-info="goodsInfo"/>
       <detail-shop-info :shop-info="shopInfo"/>
+      <detail-more-goods-info :more-info="moreGoodsInfo"/>
     </b-scroll>
+    <back-top @click.native="backToTop" v-show="backTopIsShow"/>
   </div>
 </template>
 
@@ -14,6 +16,7 @@ import DetailNavBar from "./component/DetailNavBar";
 import DetailSwiper from "./component/DetailSwiper";
 import DetailBaseGoodsInfo from "./component/DetailBaseGoodsInfo";
 import DetailShopInfo from "./component/DetailShopInfo";
+import DetailMoreGoodsInfo from "./component/DetailMoreGoodsInfo";
 
 import BackTop from "components/content/backTop/BackTop";
 
@@ -24,7 +27,7 @@ import {getDetail, GoodsInfo} from "network/detail";
 export default {
   name: "Detail",
   components: {
-    DetailNavBar, DetailSwiper, DetailBaseGoodsInfo, DetailShopInfo,
+    DetailNavBar, DetailSwiper, DetailBaseGoodsInfo, DetailShopInfo, DetailMoreGoodsInfo,
     BackTop,
     BScroll
   },
@@ -33,9 +36,10 @@ export default {
       iid: null,
       swiperItems: null,
       backTopIsShow: false,
+      refresh: null,
       goodsInfo: {},
       shopInfo: {},
-      refresh: null
+      moreGoodsInfo: {}
     }
   },
   created() {
@@ -46,6 +50,7 @@ export default {
       this.swiperItems = data.itemInfo.topImages;
       this.goodsInfo = new GoodsInfo(data.itemInfo, data.columns, data.shopInfo.services);
       this.shopInfo = data.shopInfo;
+      this.moreGoodsInfo = data.detailInfo;
       console.log(result);
     })
   },
@@ -59,6 +64,9 @@ export default {
     },
     detailSwiperImageLoaded() {
       this.refresh && this.refresh();
+    },
+    backToTop() {
+      this.$refs.scroll.scrollTo(0, 0);
     },
     debounce(func, delay) {
       let timer = null;
