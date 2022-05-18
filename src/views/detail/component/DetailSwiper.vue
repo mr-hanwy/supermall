@@ -2,7 +2,7 @@
   <div>
     <swiper class="detail-swiper">
       <swiper-item v-for="item in items" :key="item">
-        <img :src="item" alt=""/>
+        <img :src="item" alt="" @load="detailSwiperImageLoaded"/>
       </swiper-item>
     </swiper>
   </div>
@@ -20,6 +20,11 @@ export default {
       default() {
         return [];
       }
+    }
+  },
+  methods: {
+    detailSwiperImageLoaded() {
+      this.$emit('detailSwiperImageLoaded');
     }
   }
 }

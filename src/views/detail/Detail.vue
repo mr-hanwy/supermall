@@ -1,35 +1,92 @@
 <template>
   <div id="detail">
     <detail-nav-bar/>
-    <detail-swiper :items="swiperItems"/>
+    <b-scroll class="b-scroll" ref="scroll" :probeType="3" @scroll="currenScrollPosition">
+      <detail-swiper :items="swiperItems" @detailSwiperImageLoaded="detailSwiperImageLoaded"/>
+      <detail-base-goods-info :goods-info="goodsInfo"/>
+      <detail-shop-info :shop-info="shopInfo"/>
+    </b-scroll>
   </div>
 </template>
 
 <script>
 import DetailNavBar from "./component/DetailNavBar";
 import DetailSwiper from "./component/DetailSwiper";
+import DetailBaseGoodsInfo from "./component/DetailBaseGoodsInfo";
+import DetailShopInfo from "./component/DetailShopInfo";
 
-import {getDetail} from "network/detail";
+import BackTop from "components/content/backTop/BackTop";
+
+import BScroll from "components/commons/scroll/BScroll";
+
+import {getDetail, GoodsInfo} from "network/detail";
 
 export default {
   name: "Detail",
-  components: {DetailNavBar, DetailSwiper},
+  components: {
+    DetailNavBar, DetailSwiper, DetailBaseGoodsInfo, DetailShopInfo,
+    BackTop,
+    BScroll
+  },
   data() {
     return {
       iid: null,
-      swiperItems: null
+      swiperItems: null,
+      backTopIsShow: false,
+      goodsInfo: {},
+      shopInfo: {},
+      refresh: null
     }
   },
   created() {
     this.iid = this.$route.query.iid;
 
     getDetail(this.iid).then(result => {
-      this.swiperItems = result.result.itemInfo.topImages;
+      var data = result.result;
+      this.swiperItems = data.itemInfo.topImages;
+      this.goodsInfo = new GoodsInfo(data.itemInfo, data.columns, data.shopInfo.services);
+      this.shopInfo = data.shopInfo;
+      console.log(result);
     })
+  },
+  mounted() {
+    this.refresh = this.debounce(this.$refs.scroll.refresh, 500);
+  },
+  methods: {
+    currenScrollPosition(position) {
+      // 判断是否需要显示 backTop 按钮
+      this.backTopIsShow = Math.abs(position.y) > 1000;
+    },
+    detailSwiperImageLoaded() {
+      this.refresh && this.refresh();
+    },
+    debounce(func, delay) {
+      let timer = null;
+
+      return function (...args) {
+        if (timer) clearTimeout(timer);
+        timer = setTimeout(() => {
+          func.apply(this, args);
+        }, delay);
+      }
+    }
   }
 }
 </script>
 
 <style scoped>
+#detail {
+  height: 100vh;
+  background-color: #fff;
+  position: relative;
+  z-index: 99;
+}
 
+.b-scroll {
+  position: absolute;
+  top: 44px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
 </style>
