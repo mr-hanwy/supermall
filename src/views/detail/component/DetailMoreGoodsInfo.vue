@@ -101,13 +101,14 @@ export default {
   text-align: center;
   font-size: 20px;
   font-weight: bold;
-  padding: 20px 0 10px;
+  padding: 20px 0;
   border-top: 2px solid #eee;
 }
 
 .info-list .info-item .item-title span {
   padding: 10px 30px;
   background-color: #eee;
+  border-radius: 4px;
 }
 
 .info-list .info-item .item-image-list .image-item {

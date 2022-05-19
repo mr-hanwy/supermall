@@ -7,6 +7,7 @@
       <detail-shop-info :shop-info="shopInfo"/>
       <detail-more-goods-info :more-info="moreGoodsInfo" @morGoodsImageLoaded="morGoodsImageLoaded"/>
       <goods-params-info :goods-params-info="goodsParamsInfo"/>
+      <goods-evaluation-info :evaluation-info="evaluationInfo"/>
     </b-scroll>
     <back-top @click.native="backToTop" v-show="backTopIsShow"/>
   </div>
@@ -19,6 +20,7 @@ import DetailBaseGoodsInfo from "./component/DetailBaseGoodsInfo";
 import DetailShopInfo from "./component/DetailShopInfo";
 import DetailMoreGoodsInfo from "./component/DetailMoreGoodsInfo";
 import GoodsParamsInfo from "./component/GoodsParamsInfo";
+import GoodsEvaluationInfo from "./component/GoodsEvaluationInfo";
 
 import BackTop from "components/content/backTop/BackTop";
 
@@ -29,7 +31,7 @@ import {getDetail, GoodsInfo} from "network/detail";
 export default {
   name: "Detail",
   components: {
-    DetailNavBar, DetailSwiper, DetailBaseGoodsInfo, DetailShopInfo, DetailMoreGoodsInfo, GoodsParamsInfo,
+    DetailNavBar, DetailSwiper, DetailBaseGoodsInfo, DetailShopInfo, DetailMoreGoodsInfo, GoodsParamsInfo, GoodsEvaluationInfo,
     BackTop,
     BScroll
   },
@@ -42,7 +44,8 @@ export default {
       goodsInfo: {},
       shopInfo: {},
       moreGoodsInfo: {},
-      goodsParamsInfo: {}
+      goodsParamsInfo: {},
+      evaluationInfo: null
     }
   },
   created() {
@@ -55,6 +58,9 @@ export default {
       this.shopInfo = data.shopInfo;
       this.moreGoodsInfo = data.detailInfo;
       this.goodsParamsInfo = data.itemParams;
+      if (data.rate.cRate > 0) {
+        this.evaluationInfo = data.rate.list;
+      }
       console.log(result);
     })
   },
