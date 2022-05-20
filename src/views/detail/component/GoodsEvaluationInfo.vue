@@ -18,7 +18,7 @@
         <div class="user-evaluation">
           <p>{{ item.content }}</p>
           <div class="purchase-info">
-            <span class="purchase-time">{{ item.created }}</span>
+            <span class="purchase-time">{{ item.created | showDate }}</span>
             <span class="purchase-style">{{ item.style }}</span>
           </div>
           <div class="show-images">
@@ -33,6 +33,8 @@
 </template>
 
 <script>
+import {formatDate} from 'commons/utils';
+
 export default {
   name: "GoodsEvaluationInfo",
   props: {
@@ -41,6 +43,12 @@ export default {
       default() {
         return [];
       }
+    }
+  },
+  filters: {
+    showDate(value) {
+      let date = new Date(value * 1000);
+      return formatDate(date, 'yyyy-MM-dd');
     }
   }
 }
