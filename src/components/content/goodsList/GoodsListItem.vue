@@ -1,6 +1,6 @@
 <template>
   <div class="goods-list-item" @click="itemClick">
-    <img :src="info.show.img" alt="" @load="imageLoaded"/>
+    <img :src="showImage" alt="" @load="imageLoaded"/>
     <p class="item-title">{{ info.title }}</p>
     <div class="item-feature">
       <span class="item-price-origin" v-if="hasOrgPrice">{{ info.orgPrice }}</span>
@@ -20,6 +20,9 @@ export default {
     }
   },
   computed: {
+    showImage() {
+      return this.info.image || this.info.show.img;
+    },
     hasOrgPrice() {
       return this.info.orgPrice !== undefined && this.info.orgPrice !== '' && this.info.orgPrice !== '￥' && this.info.orgPrice.substring(1) !== this.info.price;
     }

@@ -57,7 +57,8 @@ export default {
       currentGoodsType: 'pop',
       backTopIsShow: false,
       isTabCtrlFixed: false,
-      scrollPositionY: 0
+      scrollPositionY: 0,
+      imageLoadedListener: null
     }
   },
   created() {
@@ -68,12 +69,11 @@ export default {
     this.getGoodsList('sell');
   },
   mounted() {
-
     const refresh = this.debounce(this.$refs.scroll.refresh, 500);
-
-    this.$eventBus.$on('imageLoaded', () => {
+    this.imageLoadedListener = () => {
       refresh();
-    })
+    };
+    this.$eventBus.$on('imageLoaded', this.imageLoadedListener);
   },
   computed: {
     currentGoodsList() {
@@ -86,6 +86,7 @@ export default {
   },
   deactivated() {
     this.scrollPositionY = this.$refs.scroll.getScrollPositionY();
+    this.$eventBus.$off('imageLoaded', this.imageLoadedListener);
   },
   methods: {
     /**
