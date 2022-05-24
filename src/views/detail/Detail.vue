@@ -11,7 +11,7 @@
       <goods-list ref="recommend" :goods="recommendGoodsInfo"/>
     </b-scroll>
     <detail-bottom-bar/>
-    <back-top @click.native="backToTop" v-show="backTopIsShow"/>
+    <back-top @click.native="backToTopBtnClick" v-show="backToTopBtnIsShow"/>
   </div>
 </template>
 
@@ -25,29 +25,26 @@ import GoodsParamsInfo from "./component/GoodsParamsInfo";
 import GoodsEvaluationInfo from "./component/GoodsEvaluationInfo";
 import DetailBottomBar from "./component/DetailBottomBar";
 
-import BackTop from "components/content/backTop/BackTop";
 import GoodsList from "components/content/goodsList/GoodsList";
 
 import BScroll from "components/commons/scroll/BScroll";
 
 import {getDetail, getRecommend, GoodsInfo} from "network/detail";
-
-import {imageLoadedMixin} from "commons/mixin";
-import {debounce} from "@/commons/utils";
+import {debounce} from "commons/utils";
+import {backToTopMixin, imageLoadedMixin} from "commons/mixin";
 
 export default {
   name: "Detail",
-  mixins: [imageLoadedMixin],
+  mixins: [backToTopMixin, imageLoadedMixin],
   components: {
     DetailNavBar, DetailSwiper, DetailBaseGoodsInfo, DetailShopInfo, DetailMoreGoodsInfo, GoodsParamsInfo, GoodsEvaluationInfo, DetailBottomBar,
-    BackTop, GoodsList,
+    GoodsList,
     BScroll
   },
   data() {
     return {
       iid: null,
       swiperItems: null,
-      backTopIsShow: false,
       refresh: null,
       goodsInfo: {},
       shopInfo: {},
@@ -93,8 +90,8 @@ export default {
     currenScrollPosition(position) {
       let y = Math.abs(position.y);
 
-      // 判断是否需要显示 backTop 按钮
-      this.backTopIsShow = y > 1000;
+      // 监听显示 backToTop 按钮
+      this.listenerBackToTopButtonShow(y);
 
       let navPositionsYLength = this.navPositionY.length - 1;
       for (let i = 0; i < navPositionsYLength; i++) {
@@ -103,9 +100,6 @@ export default {
           this.$refs.navBar.currentIndex = this.navCurrentIndex;
         }
       }
-    },
-    backToTop() {
-      this.$refs.scroll.scrollTo(0, 0);
     },
     imageLoaded() {
       this.getNavPositionY();

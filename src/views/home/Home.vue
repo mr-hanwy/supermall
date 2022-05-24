@@ -18,7 +18,7 @@
       <goods-list :goods="currentGoodsList"/>
     </b-scroll>
     <!-- 回到顶部按钮 -->
-    <back-top @click.native="backTop" v-show="backTopIsShow"/>
+    <back-top @click.native="backToTopBtnClick" v-show="backToTopBtnIsShow"/>
   </div>
 </template>
 
@@ -30,20 +30,19 @@ import Feature from "./component/Feature";
 
 import TabCtrl from "components/content/tabController/TabCtrl";
 import GoodsList from "components/content/goodsList/GoodsList";
-import BackTop from "components/content/backTop/BackTop";
 
 import BScroll from "components/commons/scroll/BScroll";
 
 import {getGoodsList, getMultiData} from "network/home";
 
-import {imageLoadedMixin} from "commons/mixin";
+import {backToTopMixin, imageLoadedMixin} from "commons/mixin";
 
 export default {
   name: "Home",
-  mixins: [imageLoadedMixin],
+  mixins: [backToTopMixin, imageLoadedMixin],
   components: {
     HomeNavBar, HomeSwiper, Recommend, Feature,
-    TabCtrl, GoodsList, BackTop,
+    TabCtrl, GoodsList,
     BScroll
   },
   data() {
@@ -58,7 +57,6 @@ export default {
         sell: {page: 0, list: []}
       },
       currentGoodsType: 'pop',
-      backTopIsShow: false,
       isTabCtrlFixed: false,
       scrollPositionY: 0
     }
@@ -125,19 +123,17 @@ export default {
       this.$refs.tabCtrl.currentIndex = index;
       this.$refs.fixedTabCtrl.currentIndex = index;
     },
-    backTop() {
-      this.$refs.scroll.scrollTo(0, 0);
-    },
     currenScrollPosition(position) {
-      // 判断是否需要显示 backTop 按钮
-      this.backTopIsShow = Math.abs(position.y) > 1000;
+      let y = Math.abs(position.y);
+      // 监听显示 backToTop 按钮
+      this.listenerBackToTopButtonShow(y);
 
       // 判断 tab-ctrl 是否吸顶
-      this.isTabCtrlFixed = Math.abs(position.y) > this.$refs.tabCtrl.$el.offsetTop;
+      this.isTabCtrlFixed = y > this.$refs.tabCtrl.$el.offsetTop;
     },
     loadMore() {
       this.getGoodsList(this.currentGoodsType);
-    },/* ================== 监听事件 end ================== */
+    }/* ================== 监听事件 end ================== */
   }
 }
 </script>
