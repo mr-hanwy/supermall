@@ -10,6 +10,7 @@
       <goods-evaluation-info ref="evaluation" :evaluation-info="evaluationInfo" @imageLoaded="imageLoaded"/>
       <goods-list ref="recommend" :goods="recommendGoodsInfo"/>
     </b-scroll>
+    <detail-bottom-bar/>
     <back-top @click.native="backToTop" v-show="backTopIsShow"/>
   </div>
 </template>
@@ -22,6 +23,7 @@ import DetailShopInfo from "./component/DetailShopInfo";
 import DetailMoreGoodsInfo from "./component/DetailMoreGoodsInfo";
 import GoodsParamsInfo from "./component/GoodsParamsInfo";
 import GoodsEvaluationInfo from "./component/GoodsEvaluationInfo";
+import DetailBottomBar from "./component/DetailBottomBar";
 
 import BackTop from "components/content/backTop/BackTop";
 import GoodsList from "components/content/goodsList/GoodsList";
@@ -37,7 +39,7 @@ export default {
   name: "Detail",
   mixins: [imageLoadedMixin],
   components: {
-    DetailNavBar, DetailSwiper, DetailBaseGoodsInfo, DetailShopInfo, DetailMoreGoodsInfo, GoodsParamsInfo, GoodsEvaluationInfo,
+    DetailNavBar, DetailSwiper, DetailBaseGoodsInfo, DetailShopInfo, DetailMoreGoodsInfo, GoodsParamsInfo, GoodsEvaluationInfo, DetailBottomBar,
     BackTop, GoodsList,
     BScroll
   },
@@ -123,13 +125,13 @@ export default {
   height: 100vh;
   background-color: #fff;
   position: relative;
-  z-index: 99;
+  z-index: 1;
 }
 
 .b-scroll {
   position: absolute;
   top: 44px;
-  bottom: 0;
+  bottom: 49px;
   left: 0;
   right: 0;
 }

@@ -159,6 +159,6 @@ export default {
 
 .fixed-tab-ctrl {
   position: relative;
-  z-index: 999;
+  z-index: 1;
 }
 </style>
