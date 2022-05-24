@@ -31,6 +31,7 @@ export default {
     },
     ctrlItemClick(index) {
       this.currentIndex = index;
+      this.$emit('ctrlItemClick', index);
     }
   }
 }

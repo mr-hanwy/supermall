@@ -23,7 +23,7 @@
           </div>
           <div class="show-images">
             <div class="image-item" v-for="img in item.images" :key="img">
-              <img :src="img" alt=""/>
+              <img :src="img" alt="" @load="imageLoaded"/>
             </div>
           </div>
         </div>
@@ -49,6 +49,11 @@ export default {
     showDate(value) {
       let date = new Date(value * 1000);
       return formatDate(date, 'yyyy-MM-dd');
+    }
+  },
+  methods: {
+    imageLoaded() {
+      this.$emit('imageLoaded');
     }
   }
 }

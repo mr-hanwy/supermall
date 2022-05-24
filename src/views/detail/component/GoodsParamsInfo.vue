@@ -33,7 +33,7 @@
         </table>
       </div>
       <div class="info-image" v-if="goodsParamsInfo.info.images">
-        <img :src="goodsParamsInfo.info.images[0]"/>
+        <img :src="goodsParamsInfo.info.images[0]" alt="" @load="imageLoaded"/>
       </div>
     </div>
   </div>
@@ -48,6 +48,11 @@ export default {
       default() {
         return {};
       }
+    }
+  },
+  methods: {
+    imageLoaded() {
+      this.$emit('imageLoaded');
     }
   }
 }

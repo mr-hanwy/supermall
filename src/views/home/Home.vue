@@ -36,8 +36,11 @@ import BScroll from "components/commons/scroll/BScroll";
 
 import {getGoodsList, getMultiData} from "network/home";
 
+import {imageLoadedMixin} from "commons/mixin";
+
 export default {
   name: "Home",
+  mixins: [imageLoadedMixin],
   components: {
     HomeNavBar, HomeSwiper, Recommend, Feature,
     TabCtrl, GoodsList, BackTop,
@@ -57,8 +60,7 @@ export default {
       currentGoodsType: 'pop',
       backTopIsShow: false,
       isTabCtrlFixed: false,
-      scrollPositionY: 0,
-      imageLoadedListener: null
+      scrollPositionY: 0
     }
   },
   created() {
@@ -67,13 +69,6 @@ export default {
     this.getGoodsList('pop');
     this.getGoodsList('new');
     this.getGoodsList('sell');
-  },
-  mounted() {
-    const refresh = this.debounce(this.$refs.scroll.refresh, 500);
-    this.imageLoadedListener = () => {
-      refresh();
-    };
-    this.$eventBus.$on('imageLoaded', this.imageLoadedListener);
   },
   computed: {
     currentGoodsList() {
@@ -143,24 +138,6 @@ export default {
     loadMore() {
       this.getGoodsList(this.currentGoodsType);
     },/* ================== 监听事件 end ================== */
-
-    /**
-     *  防抖函数
-     *  放置在指定时间内频繁调用函数或请求数据
-     * @param func 需要执行的函数
-     * @param delay 等待时间
-     * @returns {(function(...[*]): void)|*} 最终调用的函数
-     */
-    debounce(func, delay) {
-      let timer = null;
-
-      return function (...args) {
-        if (timer) clearTimeout(timer);
-        timer = setTimeout(() => {
-          func.apply(this, args);
-        }, delay);
-      }
-    }
   }
 }
 </script>

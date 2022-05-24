@@ -10,7 +10,7 @@
         <div class="item-title"><span>{{ item.key }}</span></div>
         <div class="item-image-list">
           <div class="image-item" v-for="image in item.list">
-            <img :src="image" alt=""/>
+            <img :src="image" alt="" @load="imageLoaded"/>
           </div>
         </div>
       </div>
@@ -27,6 +27,11 @@ export default {
       default() {
         return {};
       }
+    }
+  },
+  methods: {
+    imageLoaded() {
+      this.$emit('imageLoaded');
     }
   }
 }

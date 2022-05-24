@@ -1,14 +1,14 @@
 <template>
   <div id="detail">
-    <detail-nav-bar/>
-    <b-scroll class="b-scroll" ref="scroll" @scroll="currenScrollPosition">
-      <detail-swiper :items="swiperItems"/>
+    <detail-nav-bar ref="navBar" @ctrlItemClick="ctrlItemClick"/>
+    <b-scroll class="b-scroll" ref="scroll" :probe-type="3" @scroll="currenScrollPosition">
+      <detail-swiper ref="swiper" :items="swiperItems" @imageLoaded="imageLoaded"/>
       <detail-base-goods-info :goods-info="goodsInfo"/>
       <detail-shop-info :shop-info="shopInfo"/>
-      <detail-more-goods-info :more-info="moreGoodsInfo"/>
-      <goods-params-info :goods-params-info="goodsParamsInfo"/>
-      <goods-evaluation-info :evaluation-info="evaluationInfo"/>
-      <goods-list :goods="recommendGoodsInfo"/>
+      <detail-more-goods-info :more-info="moreGoodsInfo" @imageLoaded="imageLoaded"/>
+      <goods-params-info ref="params" :goods-params-info="goodsParamsInfo"/>
+      <goods-evaluation-info ref="evaluation" :evaluation-info="evaluationInfo" @imageLoaded="imageLoaded"/>
+      <goods-list ref="recommend" :goods="recommendGoodsInfo"/>
     </b-scroll>
     <back-top @click.native="backToTop" v-show="backTopIsShow"/>
   </div>
@@ -30,8 +30,12 @@ import BScroll from "components/commons/scroll/BScroll";
 
 import {getDetail, getRecommend, GoodsInfo} from "network/detail";
 
+import {imageLoadedMixin} from "commons/mixin";
+import {debounce} from "@/commons/utils";
+
 export default {
   name: "Detail",
+  mixins: [imageLoadedMixin],
   components: {
     DetailNavBar, DetailSwiper, DetailBaseGoodsInfo, DetailShopInfo, DetailMoreGoodsInfo, GoodsParamsInfo, GoodsEvaluationInfo,
     BackTop, GoodsList,
@@ -49,7 +53,9 @@ export default {
       goodsParamsInfo: {},
       evaluationInfo: null,
       recommendGoodsInfo: null,
-      imageLoadedListener: null
+      navPositionY: [],
+      navCurrentIndex: 0,
+      getNavPositionY: null
     }
   },
   created() {
@@ -66,35 +72,44 @@ export default {
         this.evaluationInfo = data.rate.list;
       }
 
-      getRecommend().then(result => {
-        this.recommendGoodsInfo = result.data.list;
-      })
-    })
-  },
-  mounted() {
-    const refresh = this.debounce(this.$refs.scroll.refresh, 500);
-    this.imageLoadedListener = () => {
-      refresh();
-    };
-    this.$eventBus.$on('imageLoaded', this.imageLoadedListener);
+    });
+
+    getRecommend().then(result => {
+      this.recommendGoodsInfo = result.data.list;
+    });
+
+    this.getNavPositionY = debounce(() => {
+      this.navPositionY = [];
+      this.navPositionY.push(this.$refs.swiper.$el.offsetTop);
+      this.navPositionY.push(this.$refs.params.$el.offsetTop);
+      this.navPositionY.push(this.$refs.evaluation.$el.offsetTop);
+      this.navPositionY.push(this.$refs.recommend.$el.offsetTop);
+      this.navPositionY.push(Number.MAX_VALUE);
+    }, 100);
   },
   methods: {
     currenScrollPosition(position) {
+      let y = Math.abs(position.y);
+
       // 判断是否需要显示 backTop 按钮
-      this.backTopIsShow = Math.abs(position.y) > 1000;
+      this.backTopIsShow = y > 1000;
+
+      let navPositionsYLength = this.navPositionY.length - 1;
+      for (let i = 0; i < navPositionsYLength; i++) {
+        if (this.navCurrentIndex !== i && (y >= this.navPositionY[i]) && y < this.navPositionY[i + 1]) {
+          this.navCurrentIndex = i;
+          this.$refs.navBar.currentIndex = this.navCurrentIndex;
+        }
+      }
     },
     backToTop() {
       this.$refs.scroll.scrollTo(0, 0);
     },
-    debounce(func, delay) {
-      let timer = null;
-
-      return function (...args) {
-        if (timer) clearTimeout(timer);
-        timer = setTimeout(() => {
-          func.apply(this, args);
-        }, delay);
-      }
+    imageLoaded() {
+      this.getNavPositionY();
+    },
+    ctrlItemClick(ctrlItemIndex) {
+      this.$refs.scroll.scrollTo(0, this.navPositionY[ctrlItemIndex] * -1);
     }
   },
   destroyed() {
