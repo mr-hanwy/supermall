@@ -10,7 +10,7 @@
       <goods-evaluation-info ref="evaluation" :evaluation-info="evaluationInfo" @imageLoaded="imageLoaded"/>
       <goods-list ref="recommend" :goods="recommendGoodsInfo"/>
     </b-scroll>
-    <detail-bottom-bar/>
+    <detail-bottom-bar @addToCartClick="addToCartClick"/>
     <back-top @click.native="backToTopBtnClick" v-show="backToTopBtnIsShow"/>
   </div>
 </template>
@@ -106,6 +106,15 @@ export default {
     },
     ctrlItemClick(ctrlItemIndex) {
       this.$refs.scroll.scrollTo(0, this.navPositionY[ctrlItemIndex] * -1);
+    },
+    addToCartClick() {
+      let product = {};
+      product.iid = this.iid;
+      product.title = this.goodsInfo.title;
+      product.desc = this.goodsInfo.desc;
+      product.price = this.goodsInfo.realPrice;
+      product.image = this.swiperItems[0];
+      this.$store.dispatch('addProductToCart', product);
     }
   },
   destroyed() {
