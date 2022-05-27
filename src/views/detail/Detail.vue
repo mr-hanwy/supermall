@@ -114,7 +114,9 @@ export default {
       product.desc = this.goodsInfo.desc;
       product.price = this.goodsInfo.realPrice;
       product.image = this.swiperItems[0];
-      this.$store.dispatch('addProductToCart', product);
+      this.$store.dispatch('addProductToCart', product).then(message => {
+        this.$toast.show(message);
+      });
     }
   },
   destroyed() {

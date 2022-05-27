@@ -1,13 +1,13 @@
 <template>
   <div id="cartBottomBar">
     <div class="select">
-      <input id="allSelect" type="checkbox" :checked="isSelectedAll" @click="allCheckboxClick">
+      <input id="allSelect" type="checkbox" :checked="isSelectedAll" :disabled="notHasProduct" @click="allCheckboxClick">
       <label for="allSelect">全选</label>
     </div>
     <div class="total-price">
       合计：{{ totalPrice }}
     </div>
-    <div class="pay">
+    <div class="pay" @click="toPay" :class="{'not-selected': !isSelectedAll}">
       去支付({{ totalCount }})
     </div>
   </div>
@@ -35,6 +35,9 @@ export default {
     isSelectedAll() {
       if (this.getProductListLengthForCart < 1) return false;
       return !this.getProductListForCart.find(product => !product.selected);
+    },
+    notHasProduct() {
+      return this.getProductListLengthForCart < 1;
     }
   },
   methods: {
@@ -43,6 +46,11 @@ export default {
         this.getProductListForCart.forEach(product => product.selected = false);
       else
         this.getProductListForCart.forEach(product => product.selected = true);
+    },
+    toPay() {
+      if (!this.isSelectedAll) {
+        this.$toast.show('请选择需要购买的商品！');
+      }
     }
   }
 }
@@ -85,5 +93,9 @@ export default {
   color: #fff;
   padding: 0 20px;
   text-align: center;
+}
+
+.pay.not-selected {
+  background-color: #aba9a9;
 }
 </style>
