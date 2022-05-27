@@ -1,12 +1,12 @@
 <template>
-  <div class="profile-container">
-    <h2>我的</h2>
+  <div class="shopcart-container">
+    <h2>购物车</h2>
   </div>
 </template>
 
 <script>
 export default {
-  name: "Profile"
+  name: "ShopCart"
 }
 </script>
 

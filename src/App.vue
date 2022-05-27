@@ -1,20 +1,15 @@
 <template>
   <div id="app">
+    <!-- 保持页面访问状态，详情页不需要保持 -->
     <keep-alive exclude="Detail">
       <router-view/>
     </keep-alive>
-    <main-tab-bar/>
   </div>
 </template>
 
 <script>
-import MainTabBar from "components/content/mainTabBar/MainTabBar";
-
 export default {
-  name: 'app',
-  components: {
-    MainTabBar
-  }
+  name: 'app'
 }
 </script>
 

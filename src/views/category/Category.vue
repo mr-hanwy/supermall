@@ -1,21 +1,15 @@
 <template>
-  <div id="category">
-    <category-nav-bar/>
+  <div class="category-container">
+    <h2>类型</h2>
   </div>
 </template>
 
 <script>
-import CategoryNavBar from "./component/CategoryNavBar";
-
 export default {
-  name: "Category",
-  components: {CategoryNavBar}
+  name: "Category"
 }
 </script>
 
 <style scoped>
-#category {
-  height: 100vh;
-  position: relative;
-}
+
 </style>
